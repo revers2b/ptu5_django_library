@@ -12,4 +12,4 @@ class BookInstanceAdmin(admin.ModelAdmin):
 admin.site.register(models.Author)
 admin.site.register(models.Genre)
 admin.site.register(models.Book, BookAdmin)
-admin.site.register(models.BookInstance)
+admin.site.register(models.BookInstance, BookInstanceAdmin)
