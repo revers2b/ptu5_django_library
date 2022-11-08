@@ -18,6 +18,8 @@ class Author(models.Model):
 
     class Meta:
         ordering = ['last_name', 'first_name']
+        verbose_name = "author"
+        verbose_name_plural = "authors"
 
 
 class Book(models.Model):
