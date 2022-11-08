@@ -30,6 +30,9 @@ class Book(models.Model):
 
     def __str__(self) -> str:
         return f"{self.author} - {self.title}"
+    
+    def display_genre(self) -> str:
+        return ', '.join(genre.name for genre in self.genre.all()[:3])
 
 
 class BookInstance(models.Model):
