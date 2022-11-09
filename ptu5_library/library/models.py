@@ -16,8 +16,14 @@ class Author(models.Model):
     def __str__(self) -> str:
         return f"{self.first_name} {self.last_name}"
 
+    def display_books(self) -> str:
+        return ', '.join(book.title for book in self.books.all())
+    display_books.short_description = 'books'
+    
     class Meta:
         ordering = ['last_name', 'first_name']
+        verbose_name = "author"
+        verbose_name_plural = "authors"
 
 
 class Book(models.Model):
@@ -25,11 +31,15 @@ class Book(models.Model):
     summary = models.TextField('summary')
     isbn = models.CharField('ISBN', max_length=13, null=True, blank=True,
         help_text='<a href="https://www.isbn-international.org/content/what-isbn" target="_blank">ISBN code</a> consisting of 13 symbols')
-    author = models.ForeignKey(Author, on_delete=models.SET_NULL, null=True, blank=True)
+    author = models.ForeignKey(Author, on_delete=models.SET_NULL, null=True, blank=True, related_name='books')
     genre = models.ManyToManyField(Genre, help_text='Choose genre(s) for this book', verbose_name='genre(s)')
 
     def __str__(self) -> str:
         return f"{self.author} - {self.title}"
+    
+    def display_genre(self) -> str:
+        return ', '.join(genre.name for genre in self.genre.all()[:3])
+    display_genre.short_description = 'genre(s)'
 
     # def display_genre(self) -> str:
     #     return ', '.join(genre.name for genre in self.genre.all()[:3])
