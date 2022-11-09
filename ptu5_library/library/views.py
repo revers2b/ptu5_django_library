@@ -7,7 +7,7 @@ def index(request):
     # return HttpResponse("Sveiki atvyke")
     books_count = Book.objects.count()
     book_instance_count = BookInstance.objects.count()
-    book_instance_available_count = BookInstance.object().filter(status='a').count()
+    book_instance_available_count = BookInstance.objects.filter(status='a').count()
     author_count = Author.objects.count()
 
     context = {
