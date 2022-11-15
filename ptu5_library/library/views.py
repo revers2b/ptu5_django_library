@@ -1,5 +1,4 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
 from django.db.models  import Q
 from django.core.paginator import Paginator
 from django.views.generic import ListView, DetailView
@@ -12,13 +11,16 @@ def index(request):
     book_instance_count = BookInstance.objects.count()
     book_instance_available_count = BookInstance.objects.filter(status='a').count()
     author_count = Author.objects.count()
+    visits_count = request.session.get('visits_count', 1)
+    request.session['visits_count'] = visits_count +1
 
     context = {
         'book_count': books_count,
         'book_instance_count': book_instance_count,
         'book_instance_available_count': book_instance_available_count,
         'author_count': author_count,
-        'genre_count': Genre.objects.count()
+        'genre_count': Genre.objects.count(),
+        'visits_count': visits_count,
     }
 
     return render(request, 'library/index.html', context)
