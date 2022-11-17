@@ -1,9 +1,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 from django.shortcuts import render, get_object_or_404
 from django.db.models  import Q
 from django.core.paginator import Paginator
 from django.views.generic import ListView, DetailView
+from django.views.generic.edit import FormMixin
+from django.urls import reverse
 from . models import Genre, Author, Book, BookInstance
+from . forms import BookReviewForm
 
 
 def index(request):
@@ -35,6 +39,7 @@ def authors(request):
 def author(request, author_id):
     return render(request, 'library/author.html', {'author': get_object_or_404(Author, id=author_id)})
 
+
 class BookListView(ListView):
     model = Book
     paginate_by = 2
@@ -60,9 +65,38 @@ class BookListView(ListView):
             context['genre'] = get_object_or_404(Genre, id=genre_id)
         return context
 
-class BookDetailView(DetailView):
+
+class BookDetailView(FormMixin, DetailView):
     model = Book
     template_name = "library/book_detail.html"
+    form_class = BookReviewForm
+
+    def get_success_url(self):
+        return reverse('book', kwargs={'pk': self.get_object().id})
+
+    def post(self, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            messages.error(self.request, "You're posting too much!")
+            return self.form_invalid(form)
+    
+    def form_valid(self, form):
+        form.instance.book = self.get_object()
+        form.instance.reader = self.request.user
+        form.save()
+        messages.success(self.request, 'Review posted!')
+        return super().form_valid(form)
+
+    def get_initial(self):
+        return {
+            'book': self.get_object(),
+            'reader': self.request.user,
+        }
+    # def form_valid(self, form):
+    #     form.instance.book = self.object
 
 
 class UserBookListView(LoginRequiredMixin, ListView):
