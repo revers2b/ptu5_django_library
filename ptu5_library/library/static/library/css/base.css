@@ -99,7 +99,7 @@ ul li:hover {
 }
 
 .paginator {
-    margin: 0.5rem 0.8rem;
+    margin: 1rem;
 }
 
 .paginator a, .paginator span {
@@ -131,18 +131,18 @@ ul.book_list {
     gap: 1rem;
 }
 
-ul li.book {
+ul.book_list li.book {
     flex-basis: 15rem;
     border: 1px solid #999;
     background-color: rgba(255, 255, 255, 0.2);
     padding: 0;
 }
 
-ul li.book img {
+ul.book_list li.book img {
     max-width: 20%;
 }
 
-ul li.book h3 {
+ul.book_list li.book h3 {
     margin-top: 0;
 }
 
@@ -158,6 +158,21 @@ table {
 .table-grid {
     display: grid;
     padding: 0.5rem;
+}
+
+.form-grid.div {
+    display: inline-block;
+    padding: 0.5rem;
+    align-self: center;
+    justify-self: stretch;
+}
+
+.form-grid input {
+    width: 20%;
+}
+
+.form-grid {
+    grid-template-columns: 10rem auto;
 }
 
 .my-books-table {
@@ -186,4 +201,21 @@ table {
     background-color: #f99;
     color: indigo;
     font-weight: bold;
+}
+
+.alert {
+    padding: 0.5rem 1rem;
+    border: 3px solid #999;
+}
+
+.alert-error {
+    background-color: #f99;
+    color: #900;
+    border-color: #900;
+}
+
+.alert-success {
+    background-color: #afa;
+    color: #070;
+    border-color: #070;
 }
