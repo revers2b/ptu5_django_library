@@ -167,7 +167,8 @@ table {
     justify-self: stretch;
 }
 
-.form-grid input {
+.form-grid input[type="text"],
+.form-grid input[type="email"] {
     width: 20%;
 }
 
@@ -230,6 +231,13 @@ table {
     margin: 0;
 }
 
+.book-review h4 img {
+    max-height: 2rem;
+    float: left;
+    margin-right: 0.5rem;
+    border-radius: 0.5rem;
+}
+
 .review-form label {
     display: none;
 }
@@ -247,4 +255,17 @@ table {
 .flex-profile {
     display: flex;
     place-items: strech strech;
+}
+
+.button {
+    background-color: #ccc;
+    color: #000;
+    text-decoration: none;
+    border: 1px solid #999;
+    border-radius: 0.25rem;
+    padding:  0.25rem;
+}
+
+.button:hover {
+    background-color: rgb(178, 116, 237);
 }
