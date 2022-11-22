@@ -7,7 +7,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.views.generic.edit import FormMixin
 from django.urls import reverse, reverse_lazy
 from . models import Genre, Author, Book, BookInstance
-from . forms import BookReviewForm
+from . forms import BookReviewForm, BookInstanceForm, BookInstanceUpdateForm
 
 
 def index(request):
@@ -112,7 +112,8 @@ class UserBookListView(LoginRequiredMixin, ListView):
 
 class UserBookInstanceCreateView(LoginRequiredMixin, CreateView):
     model = BookInstance
-    fields = ('book', 'due_back',)
+    # fields = ('book', 'due_back',)
+    form_class = BookInstanceForm
     template_name = 'library/user_bookinstance_form.html'
     success_url = reverse_lazy('user_books')
 
@@ -122,9 +123,10 @@ class UserBookInstanceCreateView(LoginRequiredMixin, CreateView):
         messages.success(self.request, 'Book reserved.')
         return super().form_valid(form)
 
-class UserBookInstanceUpdateView(LoginRequiredMixin, UpdateView):
+class UserBookInstanceUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = BookInstance
-    fields = ('book', 'due_back', )
+    # fields = ('book', 'due_back', )
+    form_class = BookInstanceUpdateForm
     template_name = 'library/user_bookinstance_form.html'
     success_url = reverse_lazy('user_books')
 
@@ -140,8 +142,26 @@ class UserBookInstanceUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if self.get_object().status == 't':
+        context['book_instance'] = self.get_object()
+        if context['book_instance'].status == 't':
             context['action'] = 'Extend'
         else:
             context['action'] = 'Take'
         return context
+
+class UserBookInstanceDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = BookInstance
+    template_name = 'library/user_bookinstance_delete.html'
+    success_url = reverse_lazy('user_books')
+
+    def test_func(self):
+        book_instance = self.get_object()
+        return self.request.user == book_instance.reader
+
+    def form_valid(self, form):
+        book_instance = self.get_object()
+        if book_instance.status == 't':
+            messages.success(self.request, 'book returned and burnded.')
+        else:
+            messages.success(self.request, 'book returned canceled.')
+        return super().form_valid(form)
