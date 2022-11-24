@@ -1,19 +1,20 @@
 from django import forms
-from . models import BookReview, BookInstance
 from django.utils.timezone import datetime, timedelta
+from . models import BookReview, BookInstance
+
 
 class BookReviewForm(forms.ModelForm):
-    def is_valid(self):
+    def is_valid(self) -> bool:
         valid = super().is_valid()
         if valid:
             reader = self.cleaned_data.get("reader")
             recent_posts = BookReview.objects.filter(
-                    reader=reader, 
-                    created_at__gte=(datetime.now()-timedelta(days=1))
-                )
+                reader=reader, 
+                created_at__gte=(datetime.utcnow()-timedelta(hours=1))
+            )
             if recent_posts:
                 return False
-            return valid
+        return valid
 
     class Meta:
         model = BookReview
@@ -32,7 +33,7 @@ class BookInstanceForm(forms.ModelForm):
     class Meta:
         model = BookInstance
         fields = ('book', 'due_back', )
-        widgets = {'due_back': DateInput(), 'book': forms.HiddenInput()}
+        widgets = {'due_back': DateInput()}
 
 
 class BookInstanceUpdateForm(forms.ModelForm):

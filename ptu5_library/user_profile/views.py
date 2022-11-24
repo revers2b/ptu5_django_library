@@ -9,7 +9,7 @@ from . forms import UserUpdateForm, ProfileUpdateForm
 User = get_user_model()
 
 @csrf_protect
-def register (request):
+def register(request):
     if request.method == "POST":
         username = request.POST.get('username')
         email = request.POST.get('email')
@@ -26,16 +26,15 @@ def register (request):
             try:
                 validate_email(email)
             except:
-                messages.error(request, 'invalid email.')
+                messages.error(request, 'Invalid email.')
                 error = True
         if not password or not password2 or password != password2:
-            messages.error(request, 'Passwords not entered, or do not match')
+            messages.error(request, 'Passwords not entered, or do not match.')
             error = True
         if not error:
             User.objects.create_user(username=username, email=email, password=password)
-            messages.success(request, f'User {username} registration successful. You can now log in.')
+            messages.success(request, f'User {username} registration successful. You can log in now.')
             return redirect('login')
-
     return render(request, 'user_profile/register.html')
 
 @login_required
@@ -55,7 +54,7 @@ def update_profile(request):
     else:
         user_form = UserUpdateForm(instance=request.user)
         profile_form = ProfileUpdateForm(instance=request.user.profile)
-    
+
     return render(request, 'user_profile/update_profile.html', {
         'user_form': user_form,
         'profile_form': profile_form,
